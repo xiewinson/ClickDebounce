@@ -1,1 +1,1 @@
-include ':demo'
+include ':click-debounce-demo', ':click-debounce-runtime'
