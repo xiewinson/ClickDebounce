@@ -1,7 +1,7 @@
 package io.github.xiewinson.clickdebounce.plugin.extension
 
 /**
- * Created by xiehao03
+ * Created by xiewinson
  */
 
 data class ClickDebounceExtension(val packages: HashSet<String>)

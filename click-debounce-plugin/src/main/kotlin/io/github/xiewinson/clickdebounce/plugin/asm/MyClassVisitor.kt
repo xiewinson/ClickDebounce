@@ -5,7 +5,7 @@ import org.objectweb.asm.MethodVisitor
 import org.objectweb.asm.Opcodes
 
 /**
- * Created by xiehao03
+ * Created by xiewinson
  */
 class MyClassVisitor(cv: ClassVisitor) : ClassVisitor(Opcodes.ASM7, cv), Opcodes {
     private var className: String? = null
