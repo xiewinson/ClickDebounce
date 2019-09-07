@@ -1,1 +1,1 @@
-include ':click-debounce-demo', ':click-debounce-runtime'
+include ':click-debounce-demo', ':click-debounce-runtime', ':click-debounce-plugin'

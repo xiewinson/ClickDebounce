@@ -1,4 +1,6 @@
 apply plugin: 'com.android.application'
+apply plugin: 'io.github.xiewinson.clickdebounce.plugin'
+apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 28
@@ -16,7 +18,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    sourceSets {
+        main.java.srcDirs += 'src/main/java'
+    }
 }
+
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -26,4 +32,6 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     implementation project(path: ':click-debounce-runtime')
+    implementation "org.jetbrains.kotlin:kotlin-stdlib"
+
 }
