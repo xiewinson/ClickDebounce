@@ -6,8 +6,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
-import io.github.xiewinson.clickdebounce.ClickHelper;
-
 public class MainActivity extends AppCompatActivity {
 
     public static final String TAG = "demo";
@@ -27,11 +25,6 @@ public class MainActivity extends AppCompatActivity {
         mBtn0.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (ClickHelper.debounce()) {
-                    Log.i(TAG, "click 过滤");
-
-                    return;
-                }
                 Log.i(TAG, "click button0");
             }
         });
@@ -39,9 +32,6 @@ public class MainActivity extends AppCompatActivity {
         mBtn1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (ClickHelper.debounce()) {
-                    return;
-                }
                 Log.i(TAG, "click button1");
             }
         });
@@ -49,9 +39,6 @@ public class MainActivity extends AppCompatActivity {
         mBtn2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (ClickHelper.debounce()) {
-                    return;
-                }
                 Log.i(TAG, "click button2");
             }
         });

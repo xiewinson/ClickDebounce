@@ -4,4 +4,12 @@ package io.github.xiewinson.clickdebounce.plugin.extension
  * Created by xiewinson
  */
 
-data class ClickDebounceExtension(val packages: HashSet<String>)
+open class ClickDebounceExtension {
+
+    var packages = mutableSetOf<String>()
+
+    /**
+     * 默认的点击间隔时间
+     */
+    var interval = 300L
+}

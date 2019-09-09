@@ -3,9 +3,11 @@ package io.github.xiewinson.clickdebounce.plugin
 import com.android.build.api.transform.*
 import com.android.build.gradle.internal.pipeline.TransformManager
 import com.android.utils.FileUtils
-import io.github.xiewinson.clickdebounce.plugin.asm.MyClassVisitor
+import io.github.xiewinson.clickdebounce.plugin.asm.DebounceClassVisitor
+import io.github.xiewinson.clickdebounce.plugin.extension.ClickDebounceExtension
 import jdk.internal.org.objectweb.asm.Opcodes
 import org.apache.commons.codec.digest.DigestUtils
+import org.gradle.api.Project
 import org.objectweb.asm.ClassReader
 import org.objectweb.asm.ClassWriter
 import java.io.File
@@ -18,7 +20,11 @@ import java.util.zip.ZipEntry
 /**
  * Created by xiewinson
  */
-class ClickDebounceTransform : Transform(), Opcodes {
+class ClickDebounceTransform(val project: Project) : Transform(), Opcodes {
+
+    private var interval = 300L
+    private val clickDebouncePackages = mutableListOf<String>()
+
     override fun getName(): String {
         return "clickDebounce"
     }
@@ -37,6 +43,12 @@ class ClickDebounceTransform : Transform(), Opcodes {
 
     override fun transform(transformInvocation: TransformInvocation?) {
         super.transform(transformInvocation)
+        val params = project.extensions.getByType(ClickDebounceExtension::class.java)
+        interval = params.interval
+        params.packages.forEach {
+            clickDebouncePackages.add(it.replace(".", "/"))
+        }
+
         transformInvocation?.let {
             transformInvocation.inputs?.forEach {
                 it.directoryInputs.forEach { input: DirectoryInput ->
@@ -66,7 +78,7 @@ class ClickDebounceTransform : Transform(), Opcodes {
             inputStream.use {
                 jarOutputStream.putNextEntry(ZipEntry(jarEntry.name))
                 if (shouldModifyClass(jarEntry.name)) {
-                    jarOutputStream.write(handleClass(it.readBytes()))
+                    jarOutputStream.write(modifyClass(it.readBytes()))
                 } else {
                     jarOutputStream.write(it.readBytes())
                 }
@@ -80,11 +92,11 @@ class ClickDebounceTransform : Transform(), Opcodes {
 
     private fun injectDir(input: DirectoryInput) {
         input.file.walkTopDown()
-                .filter { it.isFile && shouldModifyClass(it.name) }
+                .filter { it.isFile && shouldModifyClass(it.absolutePath) }
                 .forEach { file ->
                     val data = file.readBytes()
                     file.outputStream().use {
-                        it.write(handleClass(data))
+                        it.write(modifyClass(data))
                     }
                 }
     }
@@ -94,12 +106,23 @@ class ClickDebounceTransform : Transform(), Opcodes {
                 && !name.contains("R$")
                 && !name.contains("R.class")
                 && !name.contains("BuildConfig.class")
+                && isInTargetPackage(name)
     }
 
-    private fun handleClass(data: ByteArray): ByteArray {
+    private fun isInTargetPackage(name: String): Boolean {
+        clickDebouncePackages.forEach {
+            if (name.contains(it)) {
+                return true
+            }
+        }
+        return false
+    }
+
+
+    private fun modifyClass(data: ByteArray): ByteArray {
         val reader = ClassReader(data)
         val writer = ClassWriter(reader, ClassWriter.COMPUTE_MAXS)
-        val cv = MyClassVisitor(writer)
+        val cv = DebounceClassVisitor(writer, interval)
         reader.accept(cv, ClassReader.EXPAND_FRAMES)
         return writer.toByteArray()
     }
