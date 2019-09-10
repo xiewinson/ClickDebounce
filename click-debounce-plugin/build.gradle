@@ -29,7 +29,7 @@ dependencies {
 
     implementation gradleApi()
     // ASM 相关
-    implementation 'org.ow2.asm:asm:7.1'
-    implementation 'org.ow2.asm:asm-util:7.1'
-    implementation 'org.ow2.asm:asm-commons:7.1'
+    implementation 'org.ow2.asm:asm:5.0.1'
+    implementation 'org.ow2.asm:asm-util:5.0.1'
+    implementation 'org.ow2.asm:asm-commons:5.0.1'
 }

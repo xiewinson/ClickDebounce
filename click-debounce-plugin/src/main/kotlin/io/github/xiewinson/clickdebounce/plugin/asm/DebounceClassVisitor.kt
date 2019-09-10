@@ -7,7 +7,7 @@ import org.objectweb.asm.Opcodes
 /**
  * Created by xiewinson
  */
-class DebounceClassVisitor(cv: ClassVisitor, private val interval: Long) : ClassVisitor(Opcodes.ASM7, cv), Opcodes {
+class DebounceClassVisitor(cv: ClassVisitor, private val interval: Long) : ClassVisitor(Opcodes.ASM5, cv), Opcodes {
 
     private var isImplementOnClickListener = false
 

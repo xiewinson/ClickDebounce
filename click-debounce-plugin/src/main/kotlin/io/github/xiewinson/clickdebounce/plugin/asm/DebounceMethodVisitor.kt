@@ -5,7 +5,7 @@ import org.objectweb.asm.MethodVisitor
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.commons.AdviceAdapter
 
-internal class DebounceMethodVisitor(mv: MethodVisitor, access: Int, name: String?, desc: String?, private val interval: Long) : AdviceAdapter(Opcodes.ASM7, mv, access, name, desc), Opcodes {
+internal class DebounceMethodVisitor(mv: MethodVisitor, access: Int, name: String?, desc: String?, private val interval: Long) : AdviceAdapter(Opcodes.ASM5, mv, access, name, desc), Opcodes {
 
     private val label = Label()
 
