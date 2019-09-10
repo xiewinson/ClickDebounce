@@ -10,8 +10,11 @@ import org.gradle.api.Project
  */
 
 class ClickDebouncePlugin : Plugin<Project> {
-    override fun apply  (project: Project) {
+    override fun apply(project: Project) {
         project.extensions.create("clickDebounceParam", ClickDebounceExtension::class.java)
         project.extensions.getByType(AppExtension::class.java).registerTransform(ClickDebounceTransform(project))
+        project.configurations.getByName("implementation").dependencies.add(project.dependencies.create("io.github.xiewinson:click-debounce-runtime:1.0.0"))
     }
+
 }
+
