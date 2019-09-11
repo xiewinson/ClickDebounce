@@ -22,6 +22,8 @@ import java.util.zip.ZipEntry
  */
 class ClickDebounceTransform(val project: Project) : Transform(), Opcodes {
 
+    private val TAG = "[click debounce]"
+
     private var interval = 300L
     private val clickDebounceIncludeClasses = mutableListOf<String>()
     private val clickDebounceExcludeClasses = mutableListOf<String>()
@@ -53,6 +55,8 @@ class ClickDebounceTransform(val project: Project) : Transform(), Opcodes {
             clickDebounceExcludeClasses.add(it.replace(".", "/"))
         }
 
+        val startTime = System.currentTimeMillis()
+        println("$TAG start--------------------------------")
         transformInvocation?.let {
             transformInvocation.inputs?.forEach {
                 it.directoryInputs.forEach { input: DirectoryInput ->
@@ -68,7 +72,8 @@ class ClickDebounceTransform(val project: Project) : Transform(), Opcodes {
                 }
             }
         }
-
+        println("$TAG end--------------------------------")
+        println("$TAG cost time: ${System.currentTimeMillis() - startTime}")
     }
 
     private fun injectJar(srcPath: String, destPath: String): File {
@@ -82,7 +87,7 @@ class ClickDebounceTransform(val project: Project) : Transform(), Opcodes {
             inputStream.use {
                 jarOutputStream.putNextEntry(ZipEntry(jarEntry.name))
                 if (shouldModifyClass(jarEntry.name)) {
-                    jarOutputStream.write(modifyClass(it.readBytes()))
+                    jarOutputStream.write(modifyClass(jarEntry.name, it.readBytes()))
                 } else {
                     jarOutputStream.write(it.readBytes())
                 }
@@ -100,7 +105,7 @@ class ClickDebounceTransform(val project: Project) : Transform(), Opcodes {
                 .forEach { file ->
                     val data = file.readBytes()
                     file.outputStream().use {
-                        it.write(modifyClass(data))
+                        it.write(modifyClass(file.absolutePath, data))
                     }
                 }
     }
@@ -129,7 +134,8 @@ class ClickDebounceTransform(val project: Project) : Transform(), Opcodes {
     }
 
 
-    private fun modifyClass(data: ByteArray): ByteArray {
+    private fun modifyClass(name: String, data: ByteArray): ByteArray {
+        println("$TAG modifying -> $name")
         val reader = ClassReader(data)
         val writer = ClassWriter(reader, ClassWriter.COMPUTE_MAXS)
         val cv = DebounceClassVisitor(writer, interval)
