@@ -23,8 +23,8 @@ repositories {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.android.tools.build:gradle-api:3.2.1'
-    implementation 'com.android.tools.build:gradle:3.2.1'
+    implementation 'com.android.tools.build:gradle-api:2.3.3'
+    implementation 'com.android.tools.build:gradle:2.3.3'
     implementation "org.jetbrains.kotlin:kotlin-stdlib:1.2.71"
 
     implementation gradleApi()

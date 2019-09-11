@@ -6,7 +6,9 @@ package io.github.xiewinson.clickdebounce.plugin.extension
 
 open class ClickDebounceExtension {
 
-    var packages = mutableSetOf<String>()
+    var includeClasses = mutableSetOf<String>()
+
+    var excludeClasses = mutableSetOf<String>()
 
     /**
      * 默认的点击间隔时间

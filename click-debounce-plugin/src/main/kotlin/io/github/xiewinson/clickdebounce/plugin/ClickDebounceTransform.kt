@@ -23,7 +23,8 @@ import java.util.zip.ZipEntry
 class ClickDebounceTransform(val project: Project) : Transform(), Opcodes {
 
     private var interval = 300L
-    private val clickDebouncePackages = mutableListOf<String>()
+    private val clickDebounceIncludeClasses = mutableListOf<String>()
+    private val clickDebounceExcludeClasses = mutableListOf<String>()
 
     override fun getName(): String {
         return "clickDebounce"
@@ -45,8 +46,11 @@ class ClickDebounceTransform(val project: Project) : Transform(), Opcodes {
         super.transform(transformInvocation)
         val params = project.extensions.getByType(ClickDebounceExtension::class.java)
         interval = params.interval
-        params.packages.forEach {
-            clickDebouncePackages.add(it.replace(".", "/"))
+        params.includeClasses.forEach {
+            clickDebounceIncludeClasses.add(it.replace(".", "/"))
+        }
+        params.excludeClasses.forEach {
+            clickDebounceExcludeClasses.add(it.replace(".", "/"))
         }
 
         transformInvocation?.let {
@@ -56,7 +60,7 @@ class ClickDebounceTransform(val project: Project) : Transform(), Opcodes {
                     FileUtils.copyDirectory(input.file, transformInvocation.outputProvider.getContentLocation(input.name, input.contentTypes, input.scopes, Format.DIRECTORY))
                 }
                 it.jarInputs.forEach { input: JarInput ->
-                    val modifyJarPath = input.file.parentFile.absolutePath + File.separator + DigestUtils.md5Hex(input.file.absolutePath) + "_" + input.file.name
+                    val modifyJarPath = input.file.parentFile.absolutePath + File.separator + DigestUtils.md5(input.file.absolutePath.toByteArray()) + "_" + input.file.name
                     val modifyJarFile = injectJar(input.file.absolutePath, modifyJarPath)
                     val dest = transformInvocation.outputProvider.getContentLocation(modifyJarFile.name, input.contentTypes, input.scopes, Format.JAR)
                     FileUtils.copyFile(modifyJarFile, dest)
@@ -106,16 +110,22 @@ class ClickDebounceTransform(val project: Project) : Transform(), Opcodes {
                 && !name.contains("R$")
                 && !name.contains("R.class")
                 && !name.contains("BuildConfig.class")
-                && isInTargetPackage(name)
+                && isTargetClass(name)
     }
 
-    private fun isInTargetPackage(name: String): Boolean {
-        clickDebouncePackages.forEach {
-            if (name.contains(it)) {
-                return true
+    private fun isTargetClass(name: String): Boolean {
+        var result = false
+        clickDebounceIncludeClasses.forEach {
+            if (name.contains(Regex(it))) {
+                result = true
             }
         }
-        return false
+        clickDebounceExcludeClasses.forEach {
+            if (name.contains(Regex(it))) {
+                result = false
+            }
+        }
+        return result
     }
 
 
