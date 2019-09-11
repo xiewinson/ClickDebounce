@@ -58,12 +58,12 @@ class ClickDebounceTransform(val project: Project) : Transform(), Opcodes {
         val startTime = System.currentTimeMillis()
         println("$TAG start--------------------------------")
         transformInvocation?.let {
-            transformInvocation.inputs?.forEach {
-                it.directoryInputs.forEach { input: DirectoryInput ->
+            transformInvocation.inputs?.parallelStream()?.forEach {
+                it.directoryInputs.parallelStream().forEach { input: DirectoryInput ->
                     injectDir(input)
                     FileUtils.copyDirectory(input.file, transformInvocation.outputProvider.getContentLocation(input.name, input.contentTypes, input.scopes, Format.DIRECTORY))
                 }
-                it.jarInputs.forEach { input: JarInput ->
+                it.jarInputs.parallelStream().forEach { input: JarInput ->
                     val modifyJarPath = input.file.parentFile.absolutePath + File.separator + DigestUtils.md5(input.file.absolutePath.toByteArray()) + "_" + input.file.name
                     val modifyJarFile = injectJar(input.file.absolutePath, modifyJarPath)
                     val dest = transformInvocation.outputProvider.getContentLocation(modifyJarFile.name, input.contentTypes, input.scopes, Format.JAR)
