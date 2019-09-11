@@ -26,7 +26,7 @@ android {
 clickDebounce {
     includeClasses = ["io.github.xiewinson.clickdebounce.*"]
     excludeClasses = ["io.github.xiewinson.clickdebounce.demo.DemoActivity"]
-    interval 400
+    interval = 350
 }
 
 
