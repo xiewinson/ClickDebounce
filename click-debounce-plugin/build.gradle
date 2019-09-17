@@ -12,7 +12,6 @@ repositories {
 
 publish {
     userOrg = ''
-    repoName = "$REPO"
     groupId = "$GROUP_ID"
     artifactId = 'click-debounce-plugin'
     publishVersion = "$LIBRARY_VERSION"

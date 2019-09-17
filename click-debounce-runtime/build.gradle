@@ -22,7 +22,6 @@ dependencies {
 
 publish {
     userOrg = ''
-    repoName = "$REPO"
     groupId = "$GROUP_ID"
     artifactId = 'click-debounce-runtime'
     publishVersion = "$LIBRARY_VERSION"
