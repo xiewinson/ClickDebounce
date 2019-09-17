@@ -1,24 +1,26 @@
 apply plugin: 'kotlin'
-apply plugin: 'maven'
+apply plugin: 'com.novoda.bintray-release'
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 }
 
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            repository(url: 'file:///Users/xiehao/.m2/repository/')
-            pom.groupId = 'io.github.xiewinson'
-            pom.artifactId = 'click-debounce-plugin'
-            pom.version = '1.0.1'
-        }
-    }
-}
-
 repositories {
     jcenter()
     mavenLocal()
+}
+
+publish {
+    userOrg = ''
+    repoName = "$REPO"
+    groupId = "$GROUP_ID"
+    artifactId = 'click-debounce-plugin'
+    publishVersion = "$LIBRARY_VERSION"
+    desc = 'a click event debounce plugin'
+    website = 'https://github.com/xiewinson/ClickDebounce'
+    bintrayUser = "$BINTRAY_USER"
+    bintrayKey = "$BINTRAY_KEY"
+    dryRun = false
 }
 
 dependencies {

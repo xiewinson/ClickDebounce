@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply plugin: 'maven'
+apply plugin: 'com.novoda.bintray-release'
 
 android {
     compileSdkVersion 27
@@ -19,17 +19,19 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 }
 
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            repository(url: 'file:///Users/xiehao/.m2/repository/')
-            pom.groupId = 'io.github.xiewinson'
-            pom.artifactId = 'click-debounce-runtime'
-            pom.version = '1.0.1'
-        }
-    }
-}
 
+publish {
+    userOrg = ''
+    repoName = "$REPO"
+    groupId = "$GROUP_ID"
+    artifactId = 'click-debounce-runtime'
+    publishVersion = "$LIBRARY_VERSION"
+    desc = 'a click event debounce library'
+    website = 'https://github.com/xiewinson/ClickDebounce'
+    bintrayUser = "$BINTRAY_USER"
+    bintrayKey = "$BINTRAY_KEY"
+    dryRun = false
+}
 
 sourceCompatibility = "7"
 targetCompatibility = "7"
