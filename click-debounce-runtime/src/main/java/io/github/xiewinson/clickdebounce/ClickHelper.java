@@ -12,7 +12,9 @@ public class ClickHelper {
      */
     public static boolean isClickAllowed(long interval) {
         final long currentTime = System.currentTimeMillis();
-        if ((currentTime - sLastClickTime) >= interval) {
+        final long diff = currentTime - sLastClickTime;
+        // 判断小于 0 是因为用户有可能改机器时间
+        if (diff < 0 || diff >= interval) {
             sLastClickTime = currentTime;
             return true;
         }
